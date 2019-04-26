@@ -31,11 +31,25 @@ def dyna_q(args, q_value, model, maze):
     TODO:
         Complete the algorithm.
     """
-    state = maze.START_STATE
+    state = maze.START_STATE # type: list
     steps = 0
    
-    raise NotImplementedError("Dyna-Q NOT IMPLEMENTED")
-    
+    # raise NotImplementedError("Dyna-Q NOT IMPLEMENTED")
+    while state != [0, 8]:
+        steps += 1
+        action = choose_action(state, q_value, maze, args.epislon)
+        next_state, reward = maze.step(tuple(state), action)
+        # print("State {} -> Action {} -> Next State {}".format(state, action, next_state))
+        target = reward + args.gamma * max(q_value[next_state[0], next_state[1], :])
+        q_value[state[0], state[1], action] = q_value[state[0], state[1], action] + args.alpha * (target - q_value[state[0], state[1], action])
+        
+
+        for n in range(args.planning_steps):
+            pass
+
+
+        state = next_state
+
     return steps
 
 class InternalModel(object):

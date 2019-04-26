@@ -23,19 +23,23 @@ if __name__ == '__main__':
 
     # Create an environment
     env = Maze()
-    plan_steps = [0, 5, 50]
+    # plan_steps = [0, 5, 50]
+    plan_steps = [0]
     steps = np.zeros((len(plan_steps), args.episodes))
 
     for run in range(args.runs):
+        print("Run {}".format(run))
         for index, plan_step in zip(range(len(plan_steps)), plan_steps):
+            print("Plan Steps {}".format(plan_steps))
             args.planning_steps = plan_step
             
             # initialize Q table
-            q_value = np.zeros(env.q_size)
+            q_value = np.zeros(env.q_size) # shape:(6, 9, 4)
             # generate Dyna-Q model
             model = InternalModel()
 
             for ep in range(args.episodes):
+                print("Episodes {}".format(ep))
                 steps[index, ep] += dyna_q(args, q_value, model, env)
 
     # averaging over runs
