@@ -43,10 +43,12 @@ def dyna_q(args, q_value, model, maze):
         target = reward + args.gamma * max(q_value[next_state[0], next_state[1], :])
         q_value[state[0], state[1], action] = q_value[state[0], state[1], action] + args.alpha * (target - q_value[state[0], state[1], action])
         
+        model.store(state, action, next_state, reward)
 
         for n in range(args.planning_steps):
-            pass
-
+            (stateP, actionP, next_stateP, rewardP) = model.sample()
+            targetP = rewardP + args.gamma * max(q_value[next_stateP[0], next_stateP[1], :])
+            q_value[stateP[0], stateP[1], actionP] = q_value[stateP[0], stateP[1], actionP] + args.alpha * (targetP - q_value[stateP[0], stateP[1], actionP])
 
         state = next_state
 
@@ -58,7 +60,8 @@ class InternalModel(object):
         We'll create a tabular model for our simulated experience. Please complete the following code.
     """
     def __init__(self):
-        self.model = dict()
+        # self.model = dict()
+        self.model = []
         self.rand = np.random
     
     def store(self, state, action, next_state, reward):
@@ -67,9 +70,9 @@ class InternalModel(object):
             Store the previous experience into the model.
         Return:
             NULL
-        """
-        
-        raise NotImplementedError('InternalModel NOT IMPLEMENTED')
+        """        
+        exp = (state, action, next_state, reward)
+        self.model.append(exp)
 
     def sample(self):
         """
@@ -78,4 +81,6 @@ class InternalModel(object):
         Return:
             state, action, next_state, reward
         """
-        raise NotImplementedError('InternalModel NOT IMPLEMENTED')
+        import random
+        (stateP, actionP, next_stateP, rewardP) = random.sample(self.model, 1)[0]
+        return (stateP, actionP, next_stateP, rewardP)
