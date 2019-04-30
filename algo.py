@@ -44,13 +44,13 @@ def dyna_q(args, q_value, model, maze):
         q_value[state[0], state[1], action] = q_value[state[0], state[1], action] + args.alpha * (target - q_value[state[0], state[1], action])
         
         model.store(state, action, next_state, reward)
+        state = next_state
 
         for n in range(args.planning_steps):
             (stateP, actionP, next_stateP, rewardP) = model.sample()
             targetP = rewardP + args.gamma * max(q_value[next_stateP[0], next_stateP[1], :])
             q_value[stateP[0], stateP[1], actionP] = q_value[stateP[0], stateP[1], actionP] + args.alpha * (targetP - q_value[stateP[0], stateP[1], actionP])
 
-        state = next_state
 
     return steps
 
